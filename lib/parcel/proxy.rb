@@ -49,6 +49,14 @@ module Parcel
       end
     end
 
+    # Saves a parcel's contents to another file on the local filesystem.
+    def save_to(target_filename)
+      prepare
+      _format.stream! do |src|
+        File.open(target_filename, "w") { |dest| FileUtils.copy_stream(src, dest) }
+      end
+    end
+
     # Prepares the parcel by loading the data into the interface.
     def prepare
       @_proxy_prepared ||= begin
