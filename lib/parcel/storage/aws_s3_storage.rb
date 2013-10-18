@@ -36,7 +36,7 @@ module Parcel
 
         filename = Tempfile.new("#{object_id}_#{Process.pid}", Parcel::ScratchArea.root).path
 
-        File.open(filename, "w") do |file| 
+        File.open(filename, "wb") do |file| 
           key.get { |chunky| file.write chunky }
         end
 
