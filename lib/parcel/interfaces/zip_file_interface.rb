@@ -1,3 +1,5 @@
+require 'zip'
+
 module Parcel
   module Interfaces
 
