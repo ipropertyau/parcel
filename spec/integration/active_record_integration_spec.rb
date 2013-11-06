@@ -1,6 +1,6 @@
 require 'activerecord'
 require 'rubygems'
-require 'zip/zip'
+require 'zip'
 require 'sqlite3'
 
 require File.join(File.dirname(__FILE__), "..", "spec_helper")
