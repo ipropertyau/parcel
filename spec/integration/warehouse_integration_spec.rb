@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'aws'
-require 'zip'
+require 'zip/zip'
 
 require File.join(File.dirname(__FILE__), "..", "spec_helper")
 

@@ -16,7 +16,7 @@ module Parcel
         return [] unless @scratch.exist?("original")
 
         result = Array.new
-        Zip::File.foreach(@scratch.path("original")) { |entry| result << File.new(entry.name, entry.size) }
+        Zip::ZipFile.foreach(@scratch.path("original")) { |entry| result << File.new(entry.name, entry.size) }
         result
       end
     
@@ -28,7 +28,7 @@ module Parcel
         if filename =~ /[\*\?]/         
           file_match = Regexp.new("^" + filename.gsub(".", "\\.").gsub("*", ".*").gsub("?", ".") + "$", Regexp::IGNORECASE)
 
-          Zip::File.foreach(@scratch.path('original')) do |entry|
+          Zip::ZipFile.foreach(@scratch.path('original')) do |entry|
             if entry.name =~ file_match
               return @scratch.fetch("extracted_#{entry.name}") do |dest|
                 entry.get_input_stream { |src| FileUtils.copy_stream src, dest }
@@ -42,7 +42,7 @@ module Parcel
             return @scratch.read("extracted_#{filename}")
           end
 
-          Zip::File.open( @scratch.path('original') ) do |reader|
+          Zip::ZipFile.open( @scratch.path('original') ) do |reader|
             if entry = reader.find_entry(filename)
               return @scratch.fetch("extracted_#{entry.name}") do |dest|
                 entry.get_input_stream { |src| FileUtils.copy_stream src, dest }
@@ -58,7 +58,7 @@ module Parcel
       def add_file(filename, contents_or_stream)
         @scratch.delete("extracted_#{filename}")
 
-        Zip::File.open( @scratch.path('original'), Zip::File::CREATE ) do |writer|
+        Zip::ZipFile.open( @scratch.path('original'), Zip::ZipFile::CREATE ) do |writer|
           writer.get_output_stream(filename) do |file|
             if contents_or_stream.respond_to?(:read)
               FileUtils.copy_stream(contents_or_stream, file)
