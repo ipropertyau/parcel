@@ -28,7 +28,6 @@ Gem::Specification.new do |s|
     "lib/parcel.rb",
     "lib/parcel/default_setup.rb",
     "lib/parcel/dsl/active_record.rb",
-    "lib/parcel/dsl/core.rb",
     "lib/parcel/interfaces/base.rb",
     "lib/parcel/interfaces/r_magick_interface.rb",
     "lib/parcel/interfaces/scratch_space_base.rb",
@@ -46,7 +45,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Simply cool attachments}
-
+  s.add_dependency "rubyzip" , '~> 1.1'
+  
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
