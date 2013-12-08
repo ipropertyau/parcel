@@ -66,9 +66,9 @@ module Parcel
               begin
                 tempfile = Tempfile.new(filename)
                 tempfile.write(contents_or_stream)
+                tempfile.close #Only writes the contents when you close it.
                 writer.add filename, tempfile.path 
               ensure 
-                tempfile.close
                 tempfile.unlink
               end
             end
