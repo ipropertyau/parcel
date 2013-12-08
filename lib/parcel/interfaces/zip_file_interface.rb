@@ -63,7 +63,14 @@ module Parcel
             if contents_or_stream.respond_to?(:read)
               FileUtils.copy_stream(contents_or_stream, file)
             else
-              file.write contents_or_stream
+              begin
+                tempfile = Tempfile.new(filename)
+                tempfile.write(contents_or_stream)
+                writer.add filename, tempfile.path 
+              ensure 
+                tempfile.close
+                tempfile.unlink
+              end
             end
           end
         end
