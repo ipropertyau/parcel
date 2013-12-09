@@ -56,26 +56,29 @@ module Parcel
     
       # Adds a file to the repository.
       def add_file(filename, contents_or_stream)
-        @scratch.delete("extracted_#{filename}")
-
-        Zip::ZipFile.open( @scratch.path('original'), Zip::ZipFile::CREATE ) do |writer|
-          writer.get_output_stream(filename) do |file|
-            if contents_or_stream.respond_to?(:read)
-              FileUtils.copy_stream(contents_or_stream, file)
-            else
-              begin
-                tempfile = Tempfile.new(filename)
-                tempfile.write(contents_or_stream)
-                tempfile.close #Only writes the contents when you close it.
-                writer.add filename, tempfile.path 
-              ensure 
-                tempfile.unlink
+        retries = 0
+        begin  
+          @scratch.delete("extracted_#{filename}")
+          Zip::ZipFile.open( @scratch.path('original'), Zip::ZipFile::CREATE ) do |writer|
+            writer.get_output_stream(filename) do |file|
+              if contents_or_stream.respond_to?(:read)
+                FileUtils.copy_stream(contents_or_stream, file)
+              else
+                begin
+                  tempfile = Tempfile.new(filename)
+                  tempfile.write(contents_or_stream)
+                  tempfile.close #Only writes the contents when you close it.
+                  writer.add filename, tempfile.path 
+                ensure 
+                  tempfile.unlink
+                end
               end
             end
           end
+          modified!
+        rescue => ex
+          retry if retries < 5   
         end
-
-        modified!
       end
 
     end
