@@ -60,20 +60,20 @@ module Parcel
         begin  
           @scratch.delete("extracted_#{filename}")
           Zip::ZipFile.open( @scratch.path('original'), Zip::ZipFile::CREATE ) do |writer|
-            writer.get_output_stream(filename) do |file|
-              if contents_or_stream.respond_to?(:read)
+            if contents_or_stream.respond_to?(:read)
+              writer.get_output_stream(filename) do |file|
                 FileUtils.copy_stream(contents_or_stream, file)
-              else
-                begin
-                  tempfile = Tempfile.new(filename)
-                  tempfile.write(contents_or_stream)
-                  tempfile.close #Only writes the contents when you close it.
-                  writer.add filename, tempfile.path 
-                ensure 
-                  tempfile.unlink
-                end
               end
-            end
+            else
+              begin
+                tempfile = Tempfile.new(filename)
+                tempfile.write(contents_or_stream)
+                tempfile.close #Only writes the contents when you close it.
+                writer.add filename, tempfile.path 
+              ensure 
+                tempfile.unlink
+              end
+            end            
           end
           modified!
         rescue => ex
