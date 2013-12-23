@@ -1,4 +1,5 @@
 require 'zip/zip'
+require 'zipruby'
 
 module Parcel
   module Interfaces
@@ -56,7 +57,7 @@ module Parcel
 
       def add_file(filename, contents_or_stream)
         @scratch.delete("extracted_#{filename}")
-        ZipRuby::Archive.open( @scratch.path('original'), ZipRuby::CREATE ) do |writer|
+        ::ZipRuby::Archive.open( @scratch.path('original'), ::ZipRuby::CREATE ) do |writer|
           exist = ( 0...writer.num_files ).collect{ |index| writer.get_name(index) }.include?(filename)
           if contents_or_stream.respond_to?(:read)
             exist ? writer.replace_io( filename, contents_or_stream) : writer.add_io( filename , contents_or_stream)
