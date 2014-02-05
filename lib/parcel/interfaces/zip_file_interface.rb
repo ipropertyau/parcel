@@ -45,9 +45,11 @@ module Parcel
 
           Zip::ZipFile.open( @scratch.path('original') ) do |reader|
             if entry = reader.find_entry(filename)
-              return @scratch.fetch("extracted_#{entry.name}") do |dest|
-                entry.get_input_stream { |src| FileUtils.copy_stream src, dest }
-              end
+              entry.extract( @scratch.path("extracted_#{entry.name}"))
+              reader.read(filename)
+              #return @scratch.fetch("extracted_#{entry.name}") do |dest|
+              #  entry.get_input_stream { |src| FileUtils.copy_stream src, dest }
+              #end
             else
               return nil
             end
