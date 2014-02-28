@@ -29,10 +29,14 @@ module Parcel
         if filename =~ /[\*\?]/         
           file_match = Regexp.new("^" + filename.gsub(".", "\\.").gsub("*", ".*").gsub("?", ".") + "$", Regexp::IGNORECASE)
 
-          Zip::ZipFile.foreach(@scratch.path('original')) do |entry|
-            if entry.name =~ file_match
-              return @scratch.fetch("extracted_#{entry.name}") do |dest|
-                entry.get_input_stream { |src| FileUtils.copy_stream src, dest }
+          Zip::ZipFile.open( @scratch.path('original')) do |reader| 
+            reader.each do |entry|
+              if entry.name =~ file_match
+                entry.extract(@scratch.path("extracted_#{entry.name}"))
+                return reader.read(entry.name)
+                #return @scratch.fetch("extracted_#{entry.name}") do |dest|
+                #  entry.get_input_stream { |src| FileUtils.copy_stream src, dest }
+                #end
               end
             end
           end
