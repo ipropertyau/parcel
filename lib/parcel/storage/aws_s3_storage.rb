@@ -33,15 +33,15 @@ module Parcel
 
       def read
         key = bucket.key(path)
+        yield key.data 
+        #filename = Tempfile.new("#{object_id}_#{Process.pid}", Parcel::ScratchArea.root).path
 
-        filename = Tempfile.new("#{object_id}_#{Process.pid}", Parcel::ScratchArea.root).path
+        #File.open(filename, "wb") do |file| 
+        #  key.get { |chunky| file.write chunky }
+        #end
 
-        File.open(filename, "wb") do |file| 
-          key.get { |chunky| file.write chunky }
-        end
-
-        File.open(filename) { |file| yield file }
-        File.unlink(filename)
+        #File.open(filename) { |file| yield file }
+        #File.unlink(filename)
         
       rescue Aws::AwsError => ex
         raise unless ex.message =~ /^NoSuchKey/
