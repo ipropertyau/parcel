@@ -33,7 +33,7 @@ module Parcel
             reader.each do |entry|
               if entry.name =~ file_match
                 
-                if @scratch.exists?("extracted_#{entry.name}")
+                if @scratch.exist?("extracted_#{entry.name}")
                   return @scratch.read("extracted_#{entry.name}")
                 else  
                   entry.extract(@scratch.path("extracted_#{entry.name}"))
