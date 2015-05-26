@@ -102,7 +102,7 @@ module Parcel
     # Indicates if a resource within the scratch space exists.
     def exist?(name)
       return false if @root.nil?
-      File.exist?(path(name))
+      File.exist?(path(name)) && File.size( path(name) ) > 0 
     end
 
   end
