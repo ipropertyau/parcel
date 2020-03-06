@@ -9,7 +9,8 @@ module Parcel
           extend ClassMethods
 
           class << self
-            alias_method_chain :has_parcel, :active_record
+            alias_method :has_parcel_without_active_record, :has_parcel
+            alias_method :has_parcel, :has_parcel_with_active_record
           end
         end
       end
